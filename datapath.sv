@@ -40,6 +40,7 @@ endmodule
 
 
 
+
 module datapath(
     input [14:0] a,           
     input [14:0] b, 
@@ -47,7 +48,7 @@ module datapath(
     input [1:0] s2,s3,
     input clk,
 //    input mode,
-    input sub,          
+    input sub,        
     output logic [40:0] result
     );
 
@@ -73,12 +74,22 @@ assign x =  s2[1] ? c[7:0] : ( s2[0] ? result[7:0] : c);
 
 assign a1 = s1 ? y : c;
 
-assign b1 = s3[1] ? result : ( s3[0] ? result[15:8] : c[23:8]);
+//assign b1 = s3[1] ? ( s3[0] ? result[40:15] : result ) : ( s3[0] ? result[15:8] : c[23:8]);
+
+
+always_comb begin
+    case (s3)
+        2'b00: b1 = c[23:8];
+        2'b01: b1 = result[15:8];
+        2'b10: b1 = result;
+        2'b11: b1 = result[40:15];
+    endcase
+end
 
 always @(posedge clk)
 	begin
-//	   a_reg <= a;
-//	   b_reg <= b;
+////	   a_reg <= a;
+////	   b_reg <= b;
 	   result <= c1;
 	end 
     
